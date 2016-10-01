@@ -37,13 +37,13 @@ public class FTPClient {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	//TODO dorobiæ obs³ugê dowolnej liczby portów
 	public void connect() throws IOException {
 		controlSocket = new ControlSocket(new Socket(this.ip, this.port));
 		login();
 	}
 	
-	private void login() {
+	private void login() throws IOException {
 		if(password==null) {
 		controlSocket.login(username);
 		} else {
@@ -54,7 +54,10 @@ public class FTPClient {
 	public FTPFile[] ls() {
 		return controlSocket.ls();
 	}
-	public String pwd() {
+	public String pwd() throws IOException {
 		return controlSocket.pwd();
+	}
+	public LoggerImpl getLogger() {
+		return controlSocket.getLogger();
 	}
 }

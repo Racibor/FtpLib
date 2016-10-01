@@ -1,6 +1,8 @@
 package lib;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -10,61 +12,81 @@ import java.util.Scanner;
 public class ControlSocket {
 	private int port;
 	private InetAddress IP;
+	private LoggerImpl logger;
 	private Socket controlSocket;
+	private DataSocket dataSocket;
+	private int dataPort;
 	private PrintWriter pw;
-	private Scanner sc;
+	private BufferedReader sc;
 	
 	ControlSocket(Socket socket) {
+		logger = new LoggerImpl();
 		controlSocket = socket;
 		IP = socket.getInetAddress();
 		port = socket.getPort();
 		try {
 		createStreams();
-		} catch(IOException e) {
-			System.out.println("couldn't create streams");
-		}
 		String welcome;
-		while((welcome = sc.nextLine()).contains("-")) {
-			System.out.println(welcome);
-		}
-		System.out.println(welcome);
+			while((welcome = sc.readLine()).contains("-")) {
+				logger.log(welcome);
+			}
+		logger.log(welcome);
 		welcome = null;
+		} catch(IOException e) {
+			logger.log("couldn't create streams");
+		}
 	}
 	
 	private void createStreams() throws IOException {
 		pw = new PrintWriter(new OutputStreamWriter(controlSocket.getOutputStream()), true);
-		sc = new Scanner(controlSocket.getInputStream());
+		sc = new BufferedReader(new InputStreamReader(controlSocket.getInputStream()));
 	}
 	
-	public void login(String username) {
+	public boolean login(String username) throws IOException {
 		send("USER " + username);
-		System.out.println(sc.nextLine());
+		logger.log(sc.readLine());
+		return true;
 	}
 	
-	public void login(String username, String password) {
+	public void login(String username, String password) throws IOException {
 		send("USER " + username);
-		System.out.println(sc.nextLine());
+		logger.log(sc.readLine());
 		send("PASS " + password);
-		System.out.println(sc.nextLine());
+		logger.log(sc.readLine());
 	}
 	
-	public DataSocket createActiveDataSocket(int port) {
-		send(String.valueOf(port));
-		return new DataActiveSocket(this.IP, port);
+	public DataSocket createActiveDataSocket() {
+		return new DataActiveSocket(this.IP, (14*256)+dataPort);
 	}
 	
-	public String pwd() {
+	public void setDataPort(InetAddress ip, int dataPort) throws IOException {
+		this.dataPort = dataPort;
+		byte[] hostBytes = controlSocket.getInetAddress().getAddress();
+		send("PORT " + hostBytes[0] + "," + hostBytes[1] + "," + hostBytes[2] + "," + hostBytes[3] + ",14," + dataPort);
+		logger.log(sc.readLine());
+	}
+	
+	public String pwd() throws IOException {
 		send("PWD");
-		return sc.nextLine();
+		return sc.readLine();
 	}
 	
+	//TODO zwracanie obiektów FTPFile
 	public FTPFile[] ls() {
-		String welcome;
-		while((welcome = sc.nextLine()).contains("-")) {
-			System.out.println(welcome);
+		try {
+		setDataPort(this.IP, PortGenerator.generatePort());
+		} catch(IOException e) {
+			logger.log("error while reading from Socket buffer");
 		}
-		System.out.println(welcome);
-		welcome = null;
+		send("MLSD");
+		try {
+			dataSocket = createActiveDataSocket();
+			logger.log((new BufferedReader(new InputStreamReader(dataSocket.getInputStream()))).readLine());
+			dataSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -78,5 +100,8 @@ public class ControlSocket {
 			sc.close();
 			controlSocket.close();
 		}
+	}
+	public LoggerImpl getLogger() {
+		return logger;
 	}
 }
