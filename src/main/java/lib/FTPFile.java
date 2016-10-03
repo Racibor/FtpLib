@@ -7,7 +7,7 @@ public class FTPFile {
 	private String group;
 	private boolean dir;
 	
-	FTPFile(String name, long size, String owner, String group, boolean dir) {
+	FTPFile(String name, boolean dir) {
 		this.name = name;
 		this.size = size;
 		this.owner = owner;

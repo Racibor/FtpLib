@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class FTPClient {
 	private ControlSocket controlSocket;
@@ -37,7 +38,7 @@ public class FTPClient {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	//TODO dorobiæ obs³ugê dowolnej liczby portów
+	
 	public void connect() throws IOException {
 		controlSocket = new ControlSocket(new Socket(this.ip, this.port));
 		login();
@@ -51,7 +52,7 @@ public class FTPClient {
 		}
 	}
 	
-	public FTPFile[] ls() {
+	public ArrayList<FTPFile> ls() {
 		return controlSocket.ls();
 	}
 	public String pwd() throws IOException {

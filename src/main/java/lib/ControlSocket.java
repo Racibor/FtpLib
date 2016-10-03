@@ -7,17 +7,21 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class ControlSocket {
 	private int port;
 	private InetAddress IP;
 	private LoggerImpl logger;
+	private ArrayList<FTPFile> files;
 	private Socket controlSocket;
 	private DataSocket dataSocket;
 	private int dataPort;
 	private PrintWriter pw;
 	private BufferedReader sc;
+	private Scanner dataReader;
 	
 	ControlSocket(Socket socket) {
 		logger = new LoggerImpl();
@@ -71,8 +75,9 @@ public class ControlSocket {
 		return sc.readLine();
 	}
 	
-	//TODO zwracanie obiektów FTPFile
-	public FTPFile[] ls() {
+	public ArrayList<FTPFile> ls() {
+		String helper;
+		files = new ArrayList<FTPFile>();
 		try {
 		setDataPort(this.IP, PortGenerator.generatePort());
 		} catch(IOException e) {
@@ -81,13 +86,26 @@ public class ControlSocket {
 		send("MLSD");
 		try {
 			dataSocket = createActiveDataSocket();
-			logger.log((new BufferedReader(new InputStreamReader(dataSocket.getInputStream()))).readLine());
+			dataReader = new Scanner(dataSocket.getInputStream());
+			while(dataReader.hasNextLine()) {
+				helper = dataReader.nextLine();
+				if(helper.substring(5, 8).equals("dir")) {
+				files.add(new FTPFile(helper.substring(helper.indexOf(" ", 18)+1) , true));
+				logger.log("added: " + helper);
+				} else {
+					files.add(new FTPFile(helper.substring(helper.indexOf(" ", 18)+1) , false));
+				logger.log("added: " + helper);
+				}
+			}
+			dataReader.close();
 			dataSocket.close();
+			dataReader = null;
+			dataSocket = null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return files;
 	}
 	
 	public void send(String msg) {
@@ -101,6 +119,7 @@ public class ControlSocket {
 			controlSocket.close();
 		}
 	}
+	
 	public LoggerImpl getLogger() {
 		return logger;
 	}
