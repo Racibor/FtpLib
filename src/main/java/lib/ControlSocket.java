@@ -15,13 +15,10 @@ public class ControlSocket {
 	private int port;
 	private InetAddress IP;
 	private LoggerImpl logger;
-	private ArrayList<FTPFile> files;
 	private Socket controlSocket;
-	private DataSocket dataSocket;
 	private int dataPort;
 	private PrintWriter pw;
 	private BufferedReader sc;
-	private Scanner dataReader;
 	
 	ControlSocket(Socket socket) {
 		logger = new LoggerImpl();
@@ -73,39 +70,6 @@ public class ControlSocket {
 	public String pwd() throws IOException {
 		send("PWD");
 		return sc.readLine();
-	}
-	
-	public ArrayList<FTPFile> ls() {
-		String helper;
-		files = new ArrayList<FTPFile>();
-		try {
-		setDataPort(this.IP, PortGenerator.generatePort());
-		} catch(IOException e) {
-			logger.log("error while reading from Socket buffer");
-		}
-		send("MLSD");
-		try {
-			dataSocket = createActiveDataSocket();
-			dataReader = new Scanner(dataSocket.getInputStream());
-			while(dataReader.hasNextLine()) {
-				helper = dataReader.nextLine();
-				if(helper.substring(5, 8).equals("dir")) {
-				files.add(new FTPFile(helper.substring(helper.indexOf(" ", 18)+1) , true));
-				logger.log("added: " + helper);
-				} else {
-					files.add(new FTPFile(helper.substring(helper.indexOf(" ", 18)+1) , false));
-				logger.log("added: " + helper);
-				}
-			}
-			dataReader.close();
-			dataSocket.close();
-			dataReader = null;
-			dataSocket = null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return files;
 	}
 	
 	public void send(String msg) {
