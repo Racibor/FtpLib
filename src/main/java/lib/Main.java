@@ -15,17 +15,20 @@ public class Main {
 			ftp.setUsername("Raberr");
 			ftp.setPassword("Mutand123");
 			ftp.connect();
-			files  = ftp.ls();
+			// files = ftp.ls();
+			ftp.setBinaryTransferMode();
+			ftp.upload("csgo.exe");
 			log = ftp.getLogger();
 			stack = log.loggerStack;
-			for(String x : stack) {
-			System.out.println(x);
+			for (String x : stack) {
+				System.out.println(x);
 			}
 			System.out.println("-----------------------");
-			for(FTPFile file : files) {
-			System.out.println(file.getName());
-			System.out.println(file.isDir());
-			}
+			// for(FTPFile file : files) {
+			// System.out.println(file.getName());
+			// System.out.println(file.isDir());
+			// }
+
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
