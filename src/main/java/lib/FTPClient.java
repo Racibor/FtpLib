@@ -1,16 +1,11 @@
 package lib;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -120,7 +115,6 @@ public class FTPClient {
 		return files;
 	}
 
-	// TODO binary transfer
 	public boolean upload(String path) {
 		// setting up a new port for data connection
 		try {
@@ -146,7 +140,7 @@ public class FTPClient {
 					int count;
 					in = new FileInputStream(path);
 					out = new BufferedOutputStream(dataSocket.getOutputStream());
-					while ((count = in.read(buffer))>=0) {
+					while ((count = in.read(buffer)) >= 0) {
 						out.write(buffer, 0, count);
 					}
 				}

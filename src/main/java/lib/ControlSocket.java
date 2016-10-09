@@ -7,9 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Scanner;
 
 public class ControlSocket {
 	private int port;
