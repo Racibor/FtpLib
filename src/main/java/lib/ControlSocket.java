@@ -67,8 +67,10 @@ public class ControlSocket {
 		return validate("230");
 	}
 	
-	public DataSocket createActiveDataSocket() {
+	public DataSocket createDataSocket() {
+		if(connectionMode.name().equals(connectionMode.ACTIVE)) {
 		return new DataActiveSocket(this.IP, (14*256)+dataPort);
+		}
 	}
 	
 	public int getDataPort() {
