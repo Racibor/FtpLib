@@ -67,8 +67,9 @@ public class ControlSocket {
 		return validate("230");
 	}
 	
+	//TODO Arguments for DataPassiveSocket
 	public DataSocket createDataSocket() {
-		if(connectionMode.name().equals(connectionMode.ACTIVE)) {
+		if(ConnectionMode.valueOf("ACTIVE").equals(connectionMode.ACTIVE)) {
 			return new DataActiveSocket(this.IP, (14*256)+dataPort);
 		} else {
 			return new DataPassiveSocket();
