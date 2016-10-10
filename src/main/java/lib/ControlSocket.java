@@ -69,7 +69,9 @@ public class ControlSocket {
 	
 	public DataSocket createDataSocket() {
 		if(connectionMode.name().equals(connectionMode.ACTIVE)) {
-		return new DataActiveSocket(this.IP, (14*256)+dataPort);
+			return new DataActiveSocket(this.IP, (14*256)+dataPort);
+		} else {
+			return new DataPassiveSocket();
 		}
 	}
 	
