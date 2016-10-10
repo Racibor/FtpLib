@@ -165,6 +165,15 @@ public class FTPClient {
 		}
 		return true;
 	}
+	
+	public boolean download(String path) {
+		controlSocket.setDataPort();
+		
+		controlSocket.send("" + path);
+			if(controlSocket.validate(code)) {
+				dataSocket = controlSocket.createDataSocket();
+			}
+	}
 
 	public String pwd() throws IOException {
 		return controlSocket.pwd();
