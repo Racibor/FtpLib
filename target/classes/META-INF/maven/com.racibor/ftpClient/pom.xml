@@ -4,10 +4,5 @@
   <artifactId>ftpClient</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <dependencies>
-  <dependency>
-    <groupId>com.enterprisedt</groupId>
-    <artifactId>edtFTPj</artifactId>
-    <version>1.5.3</version>
-</dependency>
   </dependencies>
 </project>

@@ -1,23 +1,36 @@
 package lib;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 
 public class DataPassiveSocket implements DataSocket {
-
-	public OutputStream getOutputStream() {
-		// TODO Auto-generated method stub
-		return null;
+	private Socket socket;
+	
+	DataPassiveSocket(InetAddress ip, int port) {
+		try {
+			socket = new Socket(ip, port);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public InputStream getInputStream() {
+	public OutputStream getOutputStream() throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return socket.getOutputStream();
 	}
 
-	public void close() {
+	public InputStream getInputStream() throws IOException {
 		// TODO Auto-generated method stub
-		
+		return socket.getInputStream();
+	}
+
+	public void close() throws IOException {
+		// TODO Auto-generated method stub
+		socket.close();
+		socket = null;
 	}
 
 }
