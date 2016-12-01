@@ -73,12 +73,22 @@ public class ControlSocket {
 		}
 		return validate("230");
 	}
+<<<<<<< HEAD
 
 	public DataSocket createDataSocket() {
 		if (ConnectionType.valueOf("ACTIVE").equals(connectionType)) {
 			return new DataActiveSocket(this.IP, (14 * 256) + dataPort);
 		} else {
 			return new DataPassiveSocket(this.IP, dataPort);
+=======
+	
+	//TODO Arguments for DataPassiveSocket
+	public DataSocket createDataSocket() {
+		if(ConnectionMode.valueOf("ACTIVE").equals(connectionMode.ACTIVE)) {
+			return new DataActiveSocket(this.IP, (14*256)+dataPort);
+		} else {
+			return new DataPassiveSocket();
+>>>>>>> 5533a8850a15698811218a695e35cf3258c53c75
 		}
 	}
 
