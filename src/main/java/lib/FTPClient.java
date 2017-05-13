@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -17,8 +16,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 public class FTPClient {
 	private ControlSocket controlSocket;
@@ -38,8 +37,6 @@ public class FTPClient {
 	private String username;
 	private String password;
 	private TransferMode transferMode;
-	private ArrayList<FTPFile> files;
-	private Logger logger;
 
 	FTPClient(String ip, int port) throws UnknownHostException, IOException {
 		this.IP = InetAddress.getByName(ip);
@@ -92,11 +89,11 @@ public class FTPClient {
 		}
 	}
 
-	// Returning list of Files, and saving as an array of FTPFiles
+	// Returning list of Files as FTPFile Objects
 	//TODO retrieve more info about files
-	public ArrayList<FTPFile> ls() {
+	public List<FTPFile> ls() {
 		String helper;
-		files = new ArrayList<FTPFile>();
+		List<FTPFile> files = new ArrayList<FTPFile>();
 		try {
 			controlSocket.setDataPort(this.IP);
 			controlSocket.send("MLSD");

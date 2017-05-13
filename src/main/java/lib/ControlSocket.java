@@ -7,10 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class ControlSocket {
-	private int port;
 	private InetAddress IP;
 	private Socket controlSocket;
 	private int dataPort;
@@ -23,7 +21,6 @@ public class ControlSocket {
 		connectionType = ConnectionType.ACTIVE;
 		controlSocket = socket;
 		IP = socket.getInetAddress();
-		port = socket.getPort();
 		try {
 			createStreams();
 		} catch (IOException e) {
