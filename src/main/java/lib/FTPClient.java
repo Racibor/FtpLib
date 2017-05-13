@@ -92,7 +92,8 @@ public class FTPClient {
 		}
 	}
 
-	// Returning list of Files, and saving to and array of FTPFiles
+	// Returning list of Files, and saving as an array of FTPFiles
+	//TODO retrieve more info about files
 	public ArrayList<FTPFile> ls() {
 		String helper;
 		files = new ArrayList<FTPFile>();
@@ -121,15 +122,11 @@ public class FTPClient {
 	}
 
 	public boolean upload(String path) {
-		// setting up a new port for data connection
 		try {
 			String helper;
 			controlSocket.setDataPort(this.IP);
-			// sending "STOR" command
 			controlSocket.send("STOR " + path);
 			if (controlSocket.validate("150")) {
-				// creating data connection and opening streams for socket and
-				// file
 				dataSocket = controlSocket.createDataSocket();
 				if (TransferMode.valueOf("ASCII").equals(transferMode)) {
 					dataWriter = new PrintWriter(dataSocket.getOutputStream());
@@ -172,17 +169,17 @@ public class FTPClient {
 		return true;
 	}
 	
-	public boolean download(String path) {
-		controlSocket.setDataPort();
+	//public boolean download(String path) {
+	//	controlSocket.setDataPort(this.IP);
 		
-		controlSocket.send("" + path);
-			if(controlSocket.validate(code)) {
-				dataSocket = controlSocket.createDataSocket();
-			}
-	}
+	//	controlSocket.send("" + path);
+	//		if(controlSocket.validate(code)) {
+	//			dataSocket = controlSocket.createDataSocket();
+	//		}
+	//}
 
-	public boolean download(String file, File dir) {
-		return download(file, dir.getPath());
+	public boolean download(String file, File overSavedFile) {
+		return download(file, overSavedFile.getPath());
 	}
 
 	public boolean download(String file, String directory) {
@@ -216,7 +213,7 @@ public class FTPClient {
 					count = -1;
 				}
 				dataSocket.close();
-				// controlSocket.validate(code);
+				controlSocket.validate("226");
 				return true;
 			}
 		} catch (IOException e) {

@@ -46,7 +46,7 @@ public class ControlSocket {
 			return welcome;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			return null;
+			return new String[] { "message could not be retrieved " };
 		}
 	}
 
@@ -69,7 +69,7 @@ public class ControlSocket {
 		if (validate("331")) {
 			send("PASS " + password);
 		} else {
-			return false;
+			return true;
 		}
 		return validate("230");
 	}
